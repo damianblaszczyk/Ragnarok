@@ -18,7 +18,7 @@ sub main ()
 		localServerPort		=> '5555',
 		remoteTargetAddr	=> 'chat.idx.pl',
 		remoteTargetPort 	=> '6667',
-		lastCheckTimeout 	=>	time(),
+		lastCheckTimeout 	=> time(),
 		isReadyToCheckAlive	=> 0,
 	};
 
