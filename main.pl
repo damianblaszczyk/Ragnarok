@@ -10,7 +10,7 @@ use POSIX;
 
 sub main ()
 {
-	srand(time());
+	srand(time());#
 
  	my $configurationServerCore =	
 	{
