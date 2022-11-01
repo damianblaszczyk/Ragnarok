@@ -14,14 +14,14 @@ sub main ()
 
  	my $configurationServerCore =	
 	{
-		localServerHost			=>	'localhost',
-		localServerPort			=>	'5555',
+		localServerHost	=>	'localhost',
+		localServerPort	=>	'5555',
 
-		remoteTargetAddr		=>	'chat.idx.pl',
-		remoteTargetPort		=>	'6667',
+		remoteTargetAddr =>	'chat.idx.pl',
+		remoteTargetPort =>	'6667',
 
-		lastCheckTimeout		=>	time(),
-		isReadyToCheckAlive		=>	0,
+		lastCheckTimeout =>	time(),
+		isReadyToCheckAlive	=>	0,
 	};
 
 	socket( $configurationServerCore->{ localServerSocket }, AF_INET, SOCK_STREAM, getprotobyname('TCP') ) or die $!;	
@@ -139,7 +139,7 @@ sub mainLoop
 
 sub checkAliveAllSockets
 {
-	my $configurationServerCore			= shift(@_);
+	my $configurationServerCore	= shift(@_);
 	my @listAviableSockets;
 
 	@listAviableSockets = $configurationServerCore->{ selectInterfaceOO }->handles();
