@@ -14,14 +14,12 @@ sub main ()
 
  	my $configurationServerCore =	
 	{
-		localServerHost	=>	'localhost',
-		localServerPort	=>	'5555',
-
-		remoteTargetAddr =>	'chat.idx.pl',
-		remoteTargetPort =>	'6667',
-
+		localServerHost	=> 'localhost',
+		localServerPort	=> '5555',
+		remoteTargetAddr => 'chat.idx.pl',
+		remoteTargetPort => '6667',
 		lastCheckTimeout =>	time(),
-		isReadyToCheckAlive	=>	0,
+		isReadyToCheckAlive	=> 0,
 	};
 
 	socket( $configurationServerCore->{ localServerSocket }, AF_INET, SOCK_STREAM, getprotobyname('TCP') ) or die $!;	
@@ -43,10 +41,10 @@ sub main ()
 
 sub mainLoop 
 {
- 	my $configurationServerCore 	= shift(@_);
- 	my $tempListSockets				= {};
- 	my $remoteListSockets 			= {};
- 	my $clientListSockets 			= {};
+ 	my $configurationServerCore = shift(@_);
+ 	my $tempListSockets	= {};
+ 	my $remoteListSockets = {};
+ 	my $clientListSockets = {};
  	my @tempArray;
  	my $socketFromIOSelectList;
 
