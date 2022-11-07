@@ -29,7 +29,7 @@ sub main () {
 	$configurationServerCore->{ localServerSocket }->autoflush(1);
 
  	$configurationServerCore->{ selectInterfaceOO } = IO::Select->new();
- 	$configurationServerCore->{ selectInterfaceOO }->add($configurationServerCore->{ localServerSocket });
+ 	$configurationServerCore->{ selectInterfaceOO }->add($configurationServerCore->{localServerSocket});
 
 	mainLoop($configurationServerCore);
 	close($configurationServerCore->{ localServerSocket });
@@ -46,7 +46,7 @@ sub mainLoop {
  	my $socketFromIOSelectList;
 
  	while (1) {		
-		checkTimeoutAllSockets($configurationServerCore) if ((time() - $configurationServerCore->{ lastCheckTimeout} ) > 60);
+		checkTimeoutAllSockets($configurationServerCore) if ((time() - $configurationServerCore->{lastCheckTimeout}) > 60);
 		checkAliveAllSockets($configurationServerCore) if $configurationServerCore->{isReadyToCheckAlive};
 
  		foreach $socketFromIOSelectList ($configurationServerCore->{selectInterfaceOO}->can_read()) {
@@ -58,11 +58,11 @@ sub mainLoop {
 
  				# [TARGETSERVER CONNECTION]
  				$configurationServerCore->{rand2} = int(rand(20000000));
- 				socket($tempListSockets->{ $configurationServerCore->{rand2} }, AF_INET, SOCK_STREAM, getprotobyname('TCP'));
+ 				socket($tempListSockets->{$configurationServerCore->{rand2}}, AF_INET, SOCK_STREAM, getprotobyname('TCP'));
  				connect(
 					$tempListSockets->{$configurationServerCore->{rand2}}, 
-					sockaddr_in($configurationServerCore->{ remoteTargetPort }, 
-					inet_aton($configurationServerCore->{ remoteTargetAddr })));
+					sockaddr_in($configurationServerCore->{remoteTargetPort}, 
+					inet_aton($configurationServerCore->{remoteTargetAddr})));
 
  				# [CREATE DATA IN HASH]
  				$configurationServerCore->{ isSocketAlive }->{$tempListSockets->{$configurationServerCore->{rand1}}} = 1;
@@ -71,14 +71,14 @@ sub mainLoop {
  				$configurationServerCore->{ connectedSocketsList }->{$tempListSockets->{$configurationServerCore->{rand1}}} = 'client';
  				$configurationServerCore->{ connectedSocketsList }->{$tempListSockets->{$configurationServerCore->{rand2}}} = 'server';
 
- 				$tempListSockets->{$configurationServerCore->{rand1}}->autoflush(1);
- 				$tempListSockets->{$configurationServerCore->{rand2}}->autoflush(1);
+ 				$tempListSockets->{ $configurationServerCore->{rand1} }->autoflush(1);
+ 				$tempListSockets->{ $configurationServerCore->{rand2} }->autoflush(1);
 
  				$configurationServerCore->{ selectInterfaceOO }->add($tempListSockets->{$configurationServerCore->{rand1}});
  				$configurationServerCore->{ selectInterfaceOO }->add($tempListSockets->{$configurationServerCore->{rand2}});
 
- 				$remoteListSockets->{$tempListSockets->{$configurationServerCore->{rand1}}} = $tempListSockets->{$configurationServerCore->{rand2}};
- 				$clientListSockets->{$tempListSockets->{$configurationServerCore->{rand2}}} = $tempListSockets->{$configurationServerCore->{rand1}};				
+ 				$remoteListSockets->{ $tempListSockets->{$configurationServerCore->{rand1}} } = $tempListSockets->{$configurationServerCore->{rand2}};
+ 				$clientListSockets->{ $tempListSockets->{$configurationServerCore->{rand2}} } = $tempListSockets->{$configurationServerCore->{rand1}};				
  			}	
  			else {
  				receiveDataFromSocket($socketFromIOSelectList, $configurationServerCore);
@@ -88,39 +88,39 @@ sub mainLoop {
  	
 					if ($configurationServerCore->{brokenLineRest}->{$socketFromIOSelectList}) {
 
- 						$configurationServerCore->{ handyBufferFromSocket }->{ $socketFromIOSelectList } = 
-							$configurationServerCore->{ brokenLineRest }->{ $socketFromIOSelectList } . 
-							$configurationServerCore->{ handyBufferFromSocket }->{ $socketFromIOSelectList };
+ 						$configurationServerCore->{ handyBufferFromSocket }->{$socketFromIOSelectList} = 
+							$configurationServerCore->{brokenLineRest}->{$socketFromIOSelectList} . 
+							$configurationServerCore->{handyBufferFromSocket}->{$socketFromIOSelectList};
 
  					}
 
- 					if ((substr $configurationServerCore->{ handyBufferFromSocket }->{ $socketFromIOSelectList }, 
-						(length($configurationServerCore->{ handyBufferFromSocket }->{ $socketFromIOSelectList })-1)) ne "\n") {
+ 					if ((substr $configurationServerCore->{handyBufferFromSocket}->{$socketFromIOSelectList}, 
+						(length($configurationServerCore->{handyBufferFromSocket}->{$socketFromIOSelectList})-1)) ne "\n") {
 
-							$configurationServerCore->{ brokenLineRest }->{ $socketFromIOSelectList } = 
-								(split("\n", $configurationServerCore->{ handyBufferFromSocket }->{ $socketFromIOSelectList }))[-1];
+							$configurationServerCore->{ brokenLineRest }->{$socketFromIOSelectList} = 
+								(split("\n", $configurationServerCore->{handyBufferFromSocket}->{$socketFromIOSelectList}))[-1];
 
                  	}
 					else {
-						$configurationServerCore->{ brokenLineRest }->{ $socketFromIOSelectList } = undef;
+						$configurationServerCore->{ brokenLineRest }->{$socketFromIOSelectList} = undef;
 					}
 
- 					@tempArray = split("\n", $configurationServerCore->{ handyBufferFromSocket }->{ $socketFromIOSelectList });
+ 					@tempArray = split("\n", $configurationServerCore->{handyBufferFromSocket}->{$socketFromIOSelectList});
 
- 					if ((substr $configurationServerCore->{ handyBufferFromSocket }->{ $socketFromIOSelectList }, 
-						(length($configurationServerCore->{ handyBufferFromSocket }->{ $socketFromIOSelectList })-1)) ne "\n") {
+ 					if ((substr $configurationServerCore->{handyBufferFromSocket}->{$socketFromIOSelectList}, 
+						(length($configurationServerCore->{handyBufferFromSocket}->{$socketFromIOSelectList})-1)) ne "\n") {
 
  							pop(@tempArray);
  					}
 
  					foreach (@tempArray) {
- 						if ($configurationServerCore->{ connectedSocketsList }->{ $socketFromIOSelectList } eq 'client') {
- 							$configurationServerCore->{ lastLineFromClient } = $_ . "\n";
-							sendDataToSocket($remoteListSockets->{ $socketFromIOSelectList }, $configurationServerCore->{ lastLineFromClient }, $configurationServerCore);
+ 						if ($configurationServerCore->{connectedSocketsList}->{$socketFromIOSelectList} eq 'client') {
+ 							$configurationServerCore->{lastLineFromClient} = $_ . "\n";
+							sendDataToSocket($remoteListSockets->{$socketFromIOSelectList}, $configurationServerCore->{lastLineFromClient}, $configurationServerCore);
  						}
- 						elsif ($configurationServerCore->{ connectedSocketsList }->{ $socketFromIOSelectList } eq 'server') {
- 							$configurationServerCore->{ lastLineFromServer } = $_ . "\n";
-							sendDataToSocket($clientListSockets->{ $socketFromIOSelectList }, $configurationServerCore->{ lastLineFromServer }, $configurationServerCore);
+ 						elsif ($configurationServerCore->{connectedSocketsList}->{$socketFromIOSelectList} eq 'server') {
+ 							$configurationServerCore->{lastLineFromServer} = $_ . "\n";
+							sendDataToSocket($clientListSockets->{$socketFromIOSelectList}, $configurationServerCore->{lastLineFromServer}, $configurationServerCore);
  						}						
  					}
  				}
@@ -128,7 +128,7 @@ sub mainLoop {
 					delete $remoteListSockets->{ $socketFromIOSelectList };
 					delete $clientListSockets->{ $socketFromIOSelectList };
 
- 					$configurationServerCore->{ isSocketAlive }->{ $socketFromIOSelectList } = 0;	
+ 					$configurationServerCore->{ isSocketAlive }->{$socketFromIOSelectList} = 0;	
  					$configurationServerCore->{ isReadyToCheckAlive } = 1;			
  					next;
  				}
@@ -145,7 +145,7 @@ sub checkAliveAllSockets {
 	@listAviableSockets = $configurationServerCore->{ selectInterfaceOO }->handles();
 	shift(@listAviableSockets);
 
-	foreach my $socketWithOutMainServer ( @listAviableSockets ) {
+	foreach my $socketWithOutMainServer (@listAviableSockets) {
 		if (!$configurationServerCore->{ isSocketAlive }->{$socketWithOutMainServer}) {
 
 			$configurationServerCore->{ selectInterfaceOO }->remove($socketWithOutMainServer);
@@ -170,10 +170,10 @@ sub checkTimeoutAllSockets {
  	@listAviableSockets = $configurationServerCore->{ selectInterfaceOO }->handles();
  	shift(@listAviableSockets);
 
- 	foreach (@listAviableSockets) {
+ 	foreach my $socketWithOutMainServer (@listAviableSockets) {
  		if ($configurationServerCore->{ lastActiveTimeSocket }->{$_}) {
- 			if ((time() - $configurationServerCore->{ lastActiveTimeSocket }->{$_}) > 150) {
- 				$configurationServerCore->{ isSocketAlive }->{$_} = 0;
+ 			if ((time() - $configurationServerCore->{ lastActiveTimeSocket }->{$socketWithOutMainServer}) > 150) {
+ 				$configurationServerCore->{ isSocketAlive }->{$socketWithOutMainServer} = 0;
  				$configurationServerCore->{ isReadyToCheckAlive } = 1;
  			}
  		}
@@ -189,7 +189,7 @@ sub sendDataToSocket {
  	my $configurationServerCore		= shift(@_);
 
  	eval {
- 		if ($configurationServerCore->{ isSocketAlive }->{ $socketFromIOSelectList }) {
+ 		if ($configurationServerCore->{ isSocketAlive }->{$socketFromIOSelectList}) {
  			send($socketFromIOSelectList, "" . join(" ", split(/\s/, $buforFromSocket)) . "\r\n", 0) or die $!;
  		}
  	};
@@ -199,7 +199,7 @@ sub sendDataToSocket {
  		$configurationServerCore->{ isReadyToCheckAlive } = 1;
  	}
  	else {
- 		$configurationServerCore->{ lastActiveTimeSocket }->{ $socketFromIOSelectList } = time() if ($socketFromIOSelectList);
+ 		$configurationServerCore->{ lastActiveTimeSocket }->{$socketFromIOSelectList} = time() if ($socketFromIOSelectList);
  	}
  	return 0;
 }
@@ -209,12 +209,12 @@ sub receiveDataFromSocket {
  	my $configurationServerCore		= shift(@_);
 
  	eval {
-		if ($configurationServerCore->{ isSocketAlive }->{ $socketFromIOSelectList }) {
-			recv($socketFromIOSelectList, $configurationServerCore->{ handyBufferFromSocket }->{ $socketFromIOSelectList }, POSIX::BUFSIZ, 0) 
+		if ($configurationServerCore->{isSocketAlive}->{$socketFromIOSelectList}) {
+			recv($socketFromIOSelectList, $configurationServerCore->{handyBufferFromSocket}->{$socketFromIOSelectList}, POSIX::BUFSIZ, 0) 
 		}
  	};
  	if ($@) {
- 		$configurationServerCore->{ isSocketAlive }->{ $socketFromIOSelectList } = 0;
+ 		$configurationServerCore->{ isSocketAlive }->{$socketFromIOSelectList} = 0;
  		$configurationServerCore->{ isReadyToCheckAlive } = 1;
  	}
  	return 0;
