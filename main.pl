@@ -149,7 +149,7 @@ sub checkAliveAllSockets {
 		if (!$configurationServerCore->{ isSocketAlive }->{$socketWithOutMainServer}) {
 
 			$configurationServerCore->{ selectInterfaceOO }->remove($socketWithOutMainServer);
-			close(socketWithOutMainServer);
+			close($socketWithOutMainServer);
 			delete $configurationServerCore->{ brokenLineRest }->{$socketWithOutMainServer};
 			delete $configurationServerCore->{ connectedSocketsList }->{$socketWithOutMainServer};
 			delete $configurationServerCore->{ handyBufferFromSocket }->{$socketWithOutMainServer};
