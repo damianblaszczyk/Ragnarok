@@ -13,7 +13,7 @@ sub main () {
 
  	my $configurationServerCore =	{
 		localServerHost		=> 'localhost',
-		localServerPort		=> '5555',
+		localServerPort		=> '5566',
 		remoteTargetAddr	=> 'chat.idx.pl',
 		remoteTargetPort 	=> '6667',
 		lastCheckTimeout 	=> time(),
